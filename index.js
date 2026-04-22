@@ -1,6 +1,9 @@
 const express = require("express");
+const morgan = require("morgan");
+const cors = require("cors");
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 let notes = [
   {
@@ -20,15 +23,13 @@ let notes = [
   },
 ];
 
-const requestLogger = (req, res, next) => {
-  console.log("----------------------");
-  console.log("Method", req.method);
-  console.log("Path", req.path);
-  console.log("Body", req.body);
-  console.log("----------------------");
-  next();
-};
-app.use(requestLogger);
+// morgan.token('body'()=>{
+
+// })
+
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms"),
+);
 
 app.get("/", (req, res) => {
   res.send("<h1>hello welcome to the Ramsey Server</h1>");
@@ -91,7 +92,7 @@ const unknownEndpoint = (req, res) => {
 };
 app.use(unknownEndpoint);
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
 });
